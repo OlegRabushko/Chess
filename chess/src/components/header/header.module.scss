@@ -1,0 +1,18 @@
+@import "../../App.scss";
+
+.header__container{
+  height: 80px;
+  background-color: $bg;
+  border-bottom: 3px solid $dark-brown;
+  padding-top: 10px;
+  padding-left: 40px;
+}
+.logo__img{
+  content: url(../../assets/imgs/logo-img.svg);
+}
+.logo__text{
+  position: absolute;
+  content: url(../../assets/imgs/logo-text.svg);
+  top: 30px;
+  left: 70px;
+}

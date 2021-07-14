@@ -1,0 +1,187 @@
+@import "../../../App.scss";
+
+.body__container{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 100px;
+  height: 70vh;
+  margin-top: 20vh;
+}
+.player__box{
+  width: 200px;
+  height: 170px;
+  .player__ava{
+    margin: auto;
+    width: 100px;
+    height: 100px;
+    background-image: url(../../../assets/imgs/avatar.svg);
+    background-size: contain;
+    background-color: $light-brown;
+    border-radius: 50%;
+    border: 3px solid $dark-brown;
+  }
+  .player__name{
+    margin-top: 20px;
+    text-align: center;
+    font-size: 23px;
+    width: 100%;
+    height: 40px;
+    background-color: $light-brown;
+    border: 3px solid $dark-brown;
+    cursor: pointer;
+    &:hover{
+      background: $bg;
+      color: $white;
+    }
+  }
+}
+
+.btns__container{
+  position: relative;
+  margin: 0 auto;
+  .start__btn{
+    @include forBtn;
+    width: 300px;
+    height: 300px;
+    background-color: $dark-brown;
+    border-radius: 50%;
+    font-size: 70px;
+    font-weight: bold;
+    transition: 0.3s all;
+    color: $white;
+    &:hover{
+      background: $light-brown;
+      color: $black;
+    }
+  }
+  .network__info, 
+  .view__btn{
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-size: 15px;
+    background-color: $light-brown;
+  }
+  .network__info{
+    box-sizing: border-box;
+    text-align: center;
+    padding-top: 20px;
+    top: 0;
+    right: 0;
+    font-size: 18px;
+  }
+  .view__btn{
+    @include forBtn;
+    left: 0;
+    top: 230px;
+    border: 2px solid $dark-brown;
+    &:hover{
+      background: $bg;
+      color: $white;
+      border: 2px solid $white;
+    }
+  }
+}
+
+.modal{
+  display: block;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.3);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  
+}
+.modal__inner{
+  position: fixed;
+  text-align: center;
+  width: 700px;
+  height: 300px;
+  background-color:$bg;
+  color: $white;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 10px;
+  .top__text{
+    margin-top: 15px;
+    font-size: 30px;
+    margin-bottom: 40px;
+    text-shadow: rgb(230, 226, 210) 0px 0 7px;;
+  }
+  .input__plus__text{
+    margin: auto;
+    display: flex;
+    width: 500px;
+  }
+  .input{
+    outline: none;
+    border: none;
+    width: 300px;
+    height: 40px;
+    padding:  0 10px;
+    font-size: 20px;
+    margin-right: 20px;
+  }
+  .text{
+    height: 40px;
+    font-size: 25px;
+    width: 100px;
+  }
+  .change__btn{
+    @include forBtn;
+    margin-top: 80px;
+    height: 40px;
+    width: 90px;
+    font-size: 20px;
+    background-color: $light-brown;
+    border-radius: 5px;
+    transition: 0.1s;
+    &:hover{
+      background-color: $dark-brown;
+      color: $white;
+    }
+  }
+}
+.block__container{
+  display: flex;
+  justify-content: space-evenly;
+  .inactive__type,
+  .active__type{
+    box-sizing: border-box;
+    padding-top: 10px;
+    font-size: 20px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    width: 90px;
+    height: 60px;
+    border-radius: 5px;
+    border: 3px solid $dark-brown;
+    &:hover{
+      background-color: $white;
+      color: $black;
+    }
+  }
+  .active__type{
+    background-color: $white;
+    color: $black;
+  }
+}
+.change__game__btn{
+  @include forBtn;
+  width: 100px;
+  height: 40px;
+  font-size: 20px;
+  background-color: $light;
+  margin-top: 50px;
+  border-radius: 5px;
+  &:hover{
+    background-color: $light-brown;
+  }
+}
+.modal__disable{
+  display: none;
+}

@@ -8,7 +8,8 @@
 .timer,
 .loss__btn,
 .start__btn,
-.lobby__btn{
+.lobby__btn,
+.replays__btn{
   text-align: center;
   position: absolute;
   top: 15px;
@@ -19,7 +20,7 @@
 }
 .timer{
   left: 250px;
-  width: 200px;
+  width: 220px;
   background-color: $light;
   padding-top: 10px;
   height: 40px;
@@ -29,8 +30,8 @@ b{
 }
 .loss__btn, 
 .start__btn,
-.lobby__btn
-{
+.lobby__btn,
+.replays__btn{
   @include forBtn;
   right: 200px;
   width: 200px;
@@ -42,13 +43,19 @@ b{
     color: $black;
   }
 }
-.lobby__btn{
+.lobby__btn,
+.replays__btn{
   left: 50%;
   transform: translateX(-50%);
   background-color: rgb(250, 192, 144);
   font-weight: bold;
   color: $black;
   border: 3px solid $dark-brown;
+}
+.replays__btn{
+  background-color: rgb(255, 227, 100);
+  width: 130px;
+  left: 65%;
 }
 .start__btn{
   height:60px;
@@ -62,12 +69,17 @@ b{
   width: 400px;
   text-align: center;
   .player__ava{
+    box-sizing: border-box;
+    font-weight: bold;
+    color: rgb(197, 97, 4);
+    font-size: 70px;
+    padding-top: 5px;
     margin: auto;
     margin-top: 150px;
     width: 120px;
     height: 120px;
+    text-transform: uppercase;
     background-color: $light-brown;
-    background-image: url(../../../assets/imgs/avatar.svg);
     background-size: contain;
     border-radius: 50%;
     border: 3px solid $dark-brown;
@@ -84,6 +96,7 @@ b{
     width: 80px;
   }
   .moveHand__img{
+    position: absolute;
     width: 40px;
     padding: 5px;
     margin-top: -20px;
@@ -106,12 +119,12 @@ b{
     .part__three{
       text-transform: uppercase;
       font-size: 20px;
-      width: 40%;
+      width: 45%;
       margin-top: 10px ;
       height: 95%;
     }
     .part__one{
-      width: 20%;
+      width: 10%;
     }
     .part__two{
       padding-top: 5px;

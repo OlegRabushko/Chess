@@ -106,11 +106,15 @@
   left: 50%;
   transform: translateX(-50%);
   border-radius: 10px;
-  .top__text{
+  .top__text,
+  .top__text_special{
     margin-top: 15px;
     font-size: 30px;
     margin-bottom: 40px;
-    text-shadow: rgb(230, 226, 210) 0px 0 7px;;
+    text-shadow: rgb(230, 226, 210) 0px 0 7px;
+  }
+  .top__text_special{
+    margin-bottom: 0px;
   }
   .input__plus__text{
     margin: auto;
@@ -146,6 +150,7 @@
     }
   }
 }
+
 .block__container{
   display: flex;
   justify-content: space-evenly;

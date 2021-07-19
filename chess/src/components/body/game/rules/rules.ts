@@ -17,55 +17,6 @@ class Rules {
     py?: number,
     type?: PieceType
   ): boolean {
-    // const freePieceX = [];
-    // const freePieceY = [];
-    // if ((px! > x && py! > y) || (px! < x && py! < y)) {
-    //   if (px! < x) {
-    //     for (let i = px; i! < x; i!++) {
-    //       freePieceX.push(i);
-    //     }
-    //   }
-    //   if (px! > x) {
-    //     for (let i = x; i < px!; i++) {
-    //       freePieceX.push(i);
-    //     }
-    //   }
-    //   if (py! < y) {
-    //     for (let i = py; i! < y; i!++) {
-    //       freePieceY.push(i);
-    //     }
-    //   }
-    //   if (py! > y) {
-    //     for (let i = y; i < py!; i++) {
-    //       freePieceY.push(i);
-    //     }
-    //   }
-    // } else {
-    //   if (px! < x) {
-    //     for (let i = px; i! < x; i!++) {
-    //       freePieceX.push(i);
-    //     }
-    //   }
-    //   if (px! > x) {
-    //     for (let i = x; i < px!; i++) {
-    //       freePieceX.push(i);
-    //     }
-    //   }
-    //   if (py! < y) {
-    //     for (let i = py; i! < y; i!++) {
-    //       freePieceY.push(i);
-    //     }
-    //   }
-    //   if (py! > y) {
-    //     for (let i = y; i < py!; i++) {
-    //       freePieceY.push(i);
-    //     }
-    //   }
-    // }
-
-    // console.log(freePieceX);
-    // console.log(freePieceY);
-
     const piece = boardState.find(
       (p) => p.x === x && p.y === y && p.team === team
     );
@@ -131,13 +82,6 @@ class Rules {
     boardState: Piece[],
     cellColor: string | undefined
   ) {
-    console.log(
-      `Previous location(${px},${py})`,
-      `End location(${x},${y})`,
-      `Type:${type}`,
-      `Team:${team}`
-    );
-
     if (type === PieceType.BISHOP) {
       const color =
         cellColor === "white" ? (x + y) % 2 === 0 : (x + y) % 2 === 1;
@@ -173,10 +117,6 @@ class Rules {
           (move(i) || move(i, "-") || move(i, "x") || move(i, "y")) &&
           !this.tileIsOccupied(x, y, boardState, team)
         ) {
-          if (this.checkWin(x, y, boardState)) {
-            // gameOver();
-            // setWin(true);
-          }
           return true;
         }
       }

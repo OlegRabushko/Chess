@@ -1,3 +1,5 @@
+import { MoveDTO } from "../redux/redux-types";
+
 export interface ModalProps {
   number: number;
   active: boolean;
@@ -34,7 +36,38 @@ export interface TileProps {
   number: number;
   image?: string;
   position: string;
-  player: boolean;
+  player?: boolean;
+  size?: number;
+}
+
+export interface SocketProps {
+  event: string;
+  boardState: Piece[] | undefined;
+  players?: number;
+}
+
+export interface SavedGame {
+  gamers: string[];
+  time: string;
+  movesCount: number;
+  winner: boolean;
+}
+
+export interface WebSocketMessage {
+  event: string;
+  data: boolean | MoveDTO | string;
+}
+
+export interface PlayerDTO {
+  name: string;
+  id: number;
+}
+
+export interface PlayerProps {
+  num: number;
+  name: string;
+  setPlayer: React.Dispatch<React.SetStateAction<number>>;
+  setModalActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type DatabaseErrorEvent = Event & { target: { errorCode: string } };

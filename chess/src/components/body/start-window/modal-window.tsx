@@ -1,7 +1,9 @@
 import { FC, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setOnlineGame } from "../../../redux/actions";
+import { setOnlineGame, setOnlinePlayers } from "../../../redux/actions";
+import { deletePlayer, deletePlayers, getPlayers } from "../../../api/server";
 import s from "./start-window.module.scss";
+import { socket } from "../../../api/webSocket";
 
 interface ModalProps {
   setGameType: React.Dispatch<React.SetStateAction<string>>;
@@ -12,7 +14,21 @@ const Modal: FC<ModalProps> = ({ gameType, setGameType }) => {
   const [closeModal, setCloseModal] = useState(false);
   const dispatch = useDispatch();
 
-  const setGame = () => {
+  window.onclick = () => {
+    console.log(gameType);
+  };
+  const setGame = async () => {
+    const players = await getPlayers();
+    players.forEach(async (el) => {
+      if (players.length > 1) {
+        await deletePlayer(el.id);
+      }
+      if (el.name === localStorage.getItem("player")) {
+        await deletePlayer(el.id);
+      }
+    });
+    dispatch(setOnlineGame(false));
+    dispatch(setOnlinePlayers(false));
     if (gameType !== "") {
       setCloseModal(true);
       if (gameType === "2") {

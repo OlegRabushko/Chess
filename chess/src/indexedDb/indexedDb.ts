@@ -1,6 +1,9 @@
-import { DatabaseErrorEvent } from "./../components/interfaces-enums";
+import {
+  DatabaseErrorEvent,
+  SavedGame,
+} from "./../components/interfaces-enums";
 
-let db: IDBDatabase;
+export let db: IDBDatabase;
 const dbReq: IDBOpenDBRequest = window.indexedDB.open(
   "olegrabushko-JSFE2021Q1",
   1
@@ -18,23 +21,16 @@ dbReq.onsuccess = (event) => {
   db = (event.target as IDBOpenDBRequest).result;
 };
 
-export const IndexedDbStore = (): IDBObjectStore => {
-  const tx = db.transaction(["player"], "readwrite");
-  const store = tx.objectStore("player");
-  return store;
-};
-
-export const getPlayerFromIndexedDB = () => {
-  const playersInfo: any = [];
-  IndexedDbStore().openCursor().onsuccess = (event: Event): void => {
-    const cursor = (event.target as IDBRequest).result;
-
-    if (cursor) {
-      playersInfo.push({
-        gamer: [cursor.value.name, cursor.value.img || ""],
-      });
-      cursor.continue();
+export const getSavedGameIndexedDB = async (
+  setGameInfo: React.Dispatch<React.SetStateAction<SavedGame[]>>
+) => {
+  const tx = await db.transaction(["player"], "readwrite");
+  const store = await tx.objectStore("player");
+  store.getAll().onsuccess = async (event: Event): Promise<void> => {
+    const data = await (event.target as IDBRequest).result;
+    if (data) {
+      setGameInfo(data);
+    } else {
     }
   };
-  return playersInfo;
 };

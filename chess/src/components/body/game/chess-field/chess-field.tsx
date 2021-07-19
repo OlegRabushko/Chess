@@ -3,26 +3,19 @@ import s from "./chess-field.module.scss";
 import { FC, useEffect, useRef, useState } from "react";
 import Rules from "../rules/rules";
 import { Piece, PieceType, TeamType } from "../../../interfaces-enums";
-import { gameOver } from "../game";
 import {
+  getPlayers,
   getTurnQueue,
-  sendMessage,
   updateTurnQueue,
-} from "../../../../webSocket/webSocket";
-import { useSelector } from "react-redux";
+} from "../../../../api/server";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux";
-
-const numbers: number[] = [8, 7, 6, 5, 4, 3, 2, 1];
-const letters: string[] = ["a", "b", "c", "d", "e", "f", "g", "h"];
+import { sendMessage, sendQueue } from "../../../../api/webSocket";
+import { gameOver } from "../helpers/helper";
+import { letters, movesController, numbers } from "./chess-field-helper";
 
 interface ChessFieldProps {
   setWin: React.Dispatch<React.SetStateAction<boolean>>;
-  setMovesPlayerOne: React.Dispatch<React.SetStateAction<string[]>>;
-  setMovesPlayerTwo: React.Dispatch<React.SetStateAction<string[]>>;
-  setFigureUrlPlayerOne: React.Dispatch<React.SetStateAction<string[]>>;
-  setFigureUrlPlayerTwo: React.Dispatch<React.SetStateAction<string[]>>;
-  setTimePlayerOne: React.Dispatch<React.SetStateAction<string[]>>;
-  setTimePlayerTwo: React.Dispatch<React.SetStateAction<string[]>>;
   setStart: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveForBoard: React.Dispatch<
     React.SetStateAction<React.RefObject<HTMLDivElement> | null>
@@ -33,15 +26,8 @@ interface ChessFieldProps {
   setTurnQueue: React.Dispatch<React.SetStateAction<boolean>>;
   pieces: Piece[];
   player: boolean;
-  movesPlayerOne: string[];
-  movesPlayerTwo: string[];
-  figureUrlPlayerOne: string[];
-  figureUrlPlayerTwo: string[];
-  timePlayerOne: string[];
-  timePlayerTwo: string[];
   checkUpdatedMoves: boolean;
   win: boolean;
-  loss: boolean;
   start: boolean;
   boardActivator: React.RefObject<HTMLDivElement> | null;
   time: string;
@@ -50,12 +36,6 @@ interface ChessFieldProps {
 
 const ChessField: FC<ChessFieldProps> = ({
   setWin,
-  setFigureUrlPlayerOne,
-  setFigureUrlPlayerTwo,
-  setTimePlayerOne,
-  setTimePlayerTwo,
-  setMovesPlayerOne,
-  setMovesPlayerTwo,
   setActiveForBoard,
   setTurnQueue,
   setStart,
@@ -64,16 +44,9 @@ const ChessField: FC<ChessFieldProps> = ({
   setPlayer,
   pieces,
   player,
-  movesPlayerOne,
-  movesPlayerTwo,
-  timePlayerOne,
-  timePlayerTwo,
-  figureUrlPlayerOne,
-  figureUrlPlayerTwo,
   boardActivator,
   checkUpdatedMoves,
   win,
-  loss,
   start,
   time,
   checkTurnQueue,
@@ -87,44 +60,35 @@ const ChessField: FC<ChessFieldProps> = ({
   const board: JSX.Element[] = [];
   const coordinate = (expression: number) => Math.floor(expression / 100);
   const onlineGame = useSelector((state: RootState) => state.game.onlineGame);
-
-  let sequenceMove = checkTurnQueue;
-
-  // useEffect(() => {
-  //   setActiveForBoard(boardRef);
-  //   if (onlineGame) {
-  //     const setOnlineTurnQueue = async () => {};
-  //   }
-  // }, []);
-
-  window.onclick = async () => {
-    const queue = await getTurnQueue();
-    console.log(queue);
-    const d = await updateTurnQueue(false);
-    // if (queue) {
-    //   await updateTurnQueue(false);
-    // } else {
-    //   await updateTurnQueue(true);
-    // }
-    console.log(d);
-  };
-  // if (player === 1) {
-  //   boardRef.current?.classList.add("flip__board");
-  // }
-
+  const dispatch = useDispatch();
+  const moves = useSelector((state: RootState) => state.moves);
   const allFigures = document.querySelectorAll(
     ".chess-field_figure__img__2EzTg"
   );
 
-  document.onmousemove = () => {
-    let checker = !checkTurnQueue ? "b" : "w";
+  useEffect(() => {
+    setActiveForBoard(boardRef);
+  }, []);
+
+  document.onmousemove = async () => {
+    const queue = await getTurnQueue();
+    const player = await getPlayers();
+    const playerName = localStorage.getItem("player");
+    const searchActualPlayer = !queue ? 0 : 1;
+    let checker = (onlineGame ? !queue : !checkTurnQueue) ? "b" : "w";
     if (start) {
       allFigures.forEach((el) => {
         const elem = el as HTMLDivElement;
-        if (elem.style.backgroundImage.split("/")[2].split("")[0] === checker) {
+        if (player[searchActualPlayer].name !== playerName && onlineGame) {
           elem.style.pointerEvents = "none";
         } else {
-          elem.style.pointerEvents = "auto";
+          if (
+            elem.style.backgroundImage.split("/")[2].split("")[0] === checker
+          ) {
+            elem.style.pointerEvents = "none";
+          } else {
+            elem.style.pointerEvents = "auto";
+          }
         }
       });
     } else {
@@ -135,48 +99,49 @@ const ChessField: FC<ChessFieldProps> = ({
   };
 
   useEffect(() => {
-    let checker = 0;
-    pieces.forEach((el) => {
-      if (el.type === PieceType.KING) {
-        checker++;
+    const moveDesk = async () => {
+      let checker = 0;
+      pieces.forEach((el) => {
+        if (el.type === PieceType.KING) {
+          checker++;
+        }
+      });
+      if (checker < 2) {
+        gameOver(setWin, setStart, boardActivator, setTimer);
       }
-    });
-    if (checker < 2) {
-      gameOver(setWin, setStart, boardActivator, setTimer);
-    }
-    if (piecePosition) {
-      const coordinates = piecePosition.innerHTML.split(",");
-      const x = Number(coordinates[0]);
-      const y = Number(coordinates[1]);
-      const idEl = Number(coordinates[2]);
-      const urlEl = piecePosition.style.backgroundImage.split(`\"`)[1];
-      const findEl = pieces.find((el) => el.image === urlEl && el.id === idEl);
-      if (findEl && !win) {
-        const moveRecord = `${letters[x]}${numbers[y]}-${letters[findEl.x]}${
-          numbers[findEl.y]
-        }`;
-        if (player && !checkUpdatedMoves) {
-          setMovesPlayerOne([...movesPlayerOne, moveRecord]);
-          setTimePlayerOne([...timePlayerOne, time]);
-          setFigureUrlPlayerOne([...figureUrlPlayerOne, urlEl]);
-        } else if (!player && !checkUpdatedMoves) {
-          setMovesPlayerTwo([...movesPlayerTwo, moveRecord]);
-          setTimePlayerTwo([...timePlayerTwo, time]);
-          setFigureUrlPlayerTwo([...figureUrlPlayerTwo, urlEl]);
+      if (piecePosition) {
+        const coordinates = piecePosition.innerHTML.split(",");
+        const x = Number(coordinates[0]);
+        const y = Number(coordinates[1]);
+        const idEl = Number(coordinates[2]);
+        const urlEl = piecePosition.style.backgroundImage.split(`\"`)[1];
+        const findEl = pieces.find(
+          (el) => el.image === urlEl && el.id === idEl
+        );
+        if (findEl && !win) {
+          const moveRecord = `${letters[x]}${numbers[y]}-${letters[findEl.x]}${
+            numbers[findEl.y]
+          }`;
+          movesController(
+            moveRecord,
+            urlEl,
+            time,
+            onlineGame,
+            dispatch,
+            player,
+            checkUpdatedMoves,
+            moves
+          );
         }
       }
-    }
+    };
+    moveDesk();
   }, [pieces]);
 
   const grabPiece = (e: React.MouseEvent) => {
     const chessboard = boardRef.current;
     const element = e.target as HTMLElement;
     setPiecePosition(element);
-
-    // chessboard?.childNodes.forEach((el) => {
-    //   const elem = el as HTMLDivElement;
-    //   elem.classList.add("green");
-    // });
 
     if (
       element.classList.contains("chess-field_figure__img__2EzTg") &&
@@ -220,19 +185,108 @@ const ChessField: FC<ChessFieldProps> = ({
     }
   };
 
+  const setUpdatePieces = (x: number, y: number) => {
+    const updatePieces = pieces.reduce((results, piece) => {
+      if (piece.x === gridX && piece.y === gridY) {
+        if (Math.abs(gridY - y) === 2 && piece.type === PieceType.PAWN) {
+          piece.enPassant = true;
+        } else {
+          piece.enPassant = false;
+        }
+        piece.x = x;
+        piece.y = y;
+        results.push(piece);
+      } else if (!(piece.x === x && piece.y === y)) {
+        if (piece.type === PieceType.PAWN) {
+          piece.enPassant = false;
+        }
+        results.push(piece);
+      }
+      return results;
+    }, [] as Piece[]);
+    return updatePieces;
+  };
+
+  const setUpdatePiecesForEnPassantMove = (
+    x: number,
+    y: number,
+    direction: number
+  ) => {
+    const updatePieces = pieces.reduce((results, piece) => {
+      if (piece.x === gridX && piece.y === gridY) {
+        piece.enPassant = false;
+        piece.x = x;
+        piece.y = y;
+        results.push(piece);
+      } else if (!(piece.x === x && piece.y === y + direction)) {
+        if (piece.type === PieceType.PAWN) {
+          piece.enPassant = false;
+        }
+        results.push(piece);
+      }
+      return results;
+    }, [] as Piece[]);
+    return updatePieces;
+  };
+
+  const pawnTransformation = (y: number, currentPiece: Piece) => {
+    if (currentPiece!.type === PieceType.PAWN && (y === 0 || y === 7)) {
+      const team = y === 0 ? "w" : "b";
+      currentPiece.type = PieceType.QUEEN;
+      currentPiece.image = `assets/imgs/${team}-queen.png`;
+    }
+  };
+
+  const specialForOnlineGame = async (x: number, y: number) => {
+    const queue = await getTurnQueue();
+    queue ? updateTurnQueue(false) : updateTurnQueue(true);
+    sendQueue(checkTurnQueue);
+    sendMessage(setUpdatePieces(x, y));
+  };
+
+  const specialForOfflineGame = async (x: number, y: number) => {
+    setPieces(setUpdatePieces(x, y));
+    checkTurnQueue ? setTurnQueue(false) : setTurnQueue(true);
+    setPlayer((prev) => !prev);
+  };
+
+  const activePieceStyles = () => {
+    activePiece!.style.position = "relative";
+    activePiece!.style.removeProperty("top");
+    activePiece!.style.removeProperty("left");
+  };
+
+  const combinedLogicForCurrentPiece = (
+    x: number,
+    y: number,
+    direction: number,
+    isEnPassantMove: boolean,
+    validMode: boolean,
+    currentPiece: Piece
+  ) => {
+    if (isEnPassantMove) {
+      setPieces(setUpdatePiecesForEnPassantMove(x, y, direction));
+    } else if (validMode) {
+      pawnTransformation(y, currentPiece);
+      if (onlineGame) {
+        specialForOnlineGame(x, y);
+      } else {
+        specialForOfflineGame(x, y);
+      }
+    } else {
+      activePieceStyles();
+    }
+  };
+
   const dropPiece = async (e: React.MouseEvent) => {
     const chessboard = boardRef.current;
-    chessboard?.childNodes.forEach((el) => {
-      const elem = el as HTMLDivElement;
-      elem.classList.remove("green");
-    });
     if (activePiece && chessboard) {
       const x = coordinate(e.clientX - chessboard.offsetLeft);
       const y = coordinate(e.clientY - chessboard.offsetTop);
-
       const currentPiece = pieces.find((p) => p.x === gridX && p.y === gridY);
-
       if (currentPiece) {
+        const direction = currentPiece.team === TeamType.OUR ? 1 : -1;
+        activePiece.style.zIndex = "10";
         const validMode = rules.isValidMove(
           gridX,
           gridY,
@@ -243,7 +297,6 @@ const ChessField: FC<ChessFieldProps> = ({
           pieces,
           currentPiece.cellColor
         );
-
         const isEnPassantMove = rules.isEnPassantMove(
           gridX,
           gridY,
@@ -253,57 +306,14 @@ const ChessField: FC<ChessFieldProps> = ({
           currentPiece.team,
           pieces
         );
-
-        const direction = currentPiece.team === TeamType.OUR ? 1 : -1;
-        activePiece.style.zIndex = "10";
-
-        if (isEnPassantMove) {
-          const updatePieces = pieces.reduce((results, piece) => {
-            if (piece.x === gridX && piece.y === gridY) {
-              piece.enPassant = false;
-              piece.x = x;
-              piece.y = y;
-              results.push(piece);
-            } else if (!(piece.x === x && piece.y === y + direction)) {
-              if (piece.type === PieceType.PAWN) {
-                piece.enPassant = false;
-              }
-              results.push(piece);
-            }
-            return results;
-          }, [] as Piece[]);
-          setPieces(updatePieces);
-        } else if (validMode) {
-          const updatePieces = pieces.reduce((results, piece) => {
-            if (piece.x === gridX && piece.y === gridY) {
-              if (Math.abs(gridY - y) === 2 && piece.type === PieceType.PAWN) {
-                piece.enPassant = true;
-              } else {
-                piece.enPassant = false;
-              }
-              piece.x = x;
-              piece.y = y;
-              results.push(piece);
-            } else if (!(piece.x === x && piece.y === y)) {
-              if (piece.type === PieceType.PAWN) {
-                piece.enPassant = false;
-              }
-              results.push(piece);
-            }
-            return results;
-          }, [] as Piece[]);
-          if (onlineGame) {
-            sendMessage(updatePieces);
-          } else {
-            setPieces(updatePieces);
-          }
-          checkTurnQueue ? setTurnQueue(false) : setTurnQueue(true);
-          setPlayer((prev) => !prev);
-        } else {
-          activePiece.style.position = "relative";
-          activePiece.style.removeProperty("top");
-          activePiece.style.removeProperty("left");
-        }
+        combinedLogicForCurrentPiece(
+          x,
+          y,
+          direction,
+          isEnPassantMove,
+          validMode,
+          currentPiece
+        );
       }
       activePiece.style.zIndex = "1";
       setActivePiece(null);
@@ -337,14 +347,18 @@ const ChessField: FC<ChessFieldProps> = ({
     <>
       <div className={s.chess__container}>
         <div className={s.chess__letters}>
-          {letters.map((el) => (
-            <div className={s.chess__letter}>{el}</div>
+          {letters.map((el, i) => (
+            <div key={i} className={s.chess__letter}>
+              {el}
+            </div>
           ))}
         </div>
         <div className={s.chess__inner}>
           <div className={s.chess__numbers}>
-            {numbers.map((el) => (
-              <div className={s.chess__number}>{el}</div>
+            {numbers.map((el, i) => (
+              <div key={i} className={s.chess__number}>
+                {el}
+              </div>
             ))}
           </div>
           <div
@@ -357,14 +371,18 @@ const ChessField: FC<ChessFieldProps> = ({
             {board}
           </div>
           <div className={s.chess__numbers__2}>
-            {numbers.map((el) => (
-              <div className={s.chess__number__2}>{el}</div>
+            {numbers.map((el, i) => (
+              <div key={i} className={s.chess__number__2}>
+                {el}
+              </div>
             ))}
           </div>
         </div>
         <div className={s.chess__letters}>
-          {letters.map((el) => (
-            <div className={s.chess__letter}>{el}</div>
+          {letters.map((el, i) => (
+            <div key={i} className={s.chess__letter}>
+              {el}
+            </div>
           ))}
         </div>
       </div>

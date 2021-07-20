@@ -1,5 +1,5 @@
 import Tile from "./tile";
-import s from "./chess-field.module.scss";
+import "./chess-field.scss";
 import { FC, useEffect, useRef, useState } from "react";
 import Rules from "../rules/rules";
 import { Piece, PieceType, TeamType } from "../../../interfaces-enums";
@@ -62,9 +62,7 @@ const ChessField: FC<ChessFieldProps> = ({
   const onlineGame = useSelector((state: RootState) => state.game.onlineGame);
   const dispatch = useDispatch();
   const moves = useSelector((state: RootState) => state.moves);
-  const allFigures = document.querySelectorAll(
-    ".chess-field_figure__img__2EzTg"
-  );
+  const allFigures = document.querySelectorAll(".figure__img");
 
   useEffect(() => {
     setActiveForBoard(boardRef);
@@ -83,7 +81,7 @@ const ChessField: FC<ChessFieldProps> = ({
           elem.style.pointerEvents = "none";
         } else {
           if (
-            elem.style.backgroundImage.split("/")[2].split("")[0] === checker
+            elem.style.backgroundImage.split("/")[4].split("")[0] === checker
           ) {
             elem.style.pointerEvents = "none";
           } else {
@@ -109,12 +107,15 @@ const ChessField: FC<ChessFieldProps> = ({
       if (checker < 2) {
         gameOver(setWin, setStart, boardActivator, setTimer);
       }
+
       if (piecePosition) {
         const coordinates = piecePosition.innerHTML.split(",");
         const x = Number(coordinates[0]);
         const y = Number(coordinates[1]);
         const idEl = Number(coordinates[2]);
-        const urlEl = piecePosition.style.backgroundImage.split(`\"`)[1];
+        const urlEl = piecePosition.style.backgroundImage
+          .split(`\"`)[1]
+          .split(`/Chess`)[1];
         const findEl = pieces.find(
           (el) => el.image === urlEl && el.id === idEl
         );
@@ -122,6 +123,7 @@ const ChessField: FC<ChessFieldProps> = ({
           const moveRecord = `${letters[x]}${numbers[y]}-${letters[findEl.x]}${
             numbers[findEl.y]
           }`;
+
           movesController(
             moveRecord,
             urlEl,
@@ -143,10 +145,7 @@ const ChessField: FC<ChessFieldProps> = ({
     const element = e.target as HTMLElement;
     setPiecePosition(element);
 
-    if (
-      element.classList.contains("chess-field_figure__img__2EzTg") &&
-      chessboard
-    ) {
+    if (element.classList.contains("figure__img") && chessboard) {
       const gridX = coordinate(e.clientX - chessboard.offsetLeft);
       const gridY = coordinate(e.clientY - chessboard.offsetTop);
 
@@ -233,7 +232,7 @@ const ChessField: FC<ChessFieldProps> = ({
     if (currentPiece!.type === PieceType.PAWN && (y === 0 || y === 7)) {
       const team = y === 0 ? "w" : "b";
       currentPiece.type = PieceType.QUEEN;
-      currentPiece.image = `assets/imgs/${team}-queen.png`;
+      currentPiece.image = `/assets/imgs/${team}-queen.png`;
     }
   };
 
@@ -345,19 +344,18 @@ const ChessField: FC<ChessFieldProps> = ({
 
   return (
     <>
-      {/* <img src="" alt="" /> */}
-      <div className={s.chess__container}>
-        <div className={s.chess__letters}>
+      <div className="chess__container">
+        <div className="chess__letters">
           {letters.map((el, i) => (
-            <div key={i} className={s.chess__letter}>
+            <div key={i} className="chess__letter">
               {el}
             </div>
           ))}
         </div>
-        <div className={s.chess__inner}>
-          <div className={s.chess__numbers}>
+        <div className="chess__inner">
+          <div className="chess__numbers">
             {numbers.map((el, i) => (
-              <div key={i} className={s.chess__number}>
+              <div key={i} className="chess__number">
                 {el}
               </div>
             ))}
@@ -367,21 +365,21 @@ const ChessField: FC<ChessFieldProps> = ({
             onMouseMove={movePiece}
             onMouseDown={grabPiece}
             onMouseUp={dropPiece}
-            className={s.chess__grid}
+            className="chess__grid"
           >
             {board}
           </div>
-          <div className={s.chess__numbers__2}>
+          <div className="chess__numbers__2">
             {numbers.map((el, i) => (
-              <div key={i} className={s.chess__number__2}>
+              <div key={i} className="chess__number__2">
                 {el}
               </div>
             ))}
           </div>
         </div>
-        <div className={s.chess__letters}>
+        <div className="chess__letters">
           {letters.map((el, i) => (
-            <div key={i} className={s.chess__letter}>
+            <div key={i} className="chess__letter">
               {el}
             </div>
           ))}

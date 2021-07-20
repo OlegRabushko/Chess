@@ -55,7 +55,11 @@ const PlayerField: FC<Player> = ({
     <>
       <div className={s.player__field}>
         {checkWinner || checkLoss ? (
-          <img className={s.win__ico} src="assets/imgs/win-ico.svg" alt="" />
+          <img
+            className={s.win__ico}
+            src={process.env.PUBLIC_URL + "/assets/imgs/win-ico.svg"}
+            alt=""
+          />
         ) : (
           ""
         )}
@@ -68,7 +72,7 @@ const PlayerField: FC<Player> = ({
           {checkMove ? (
             <img
               className={s.moveHand__img}
-              src="assets/imgs/move-hand.svg"
+              src={process.env.PUBLIC_URL + "/assets/imgs/move-hand.svg"}
               alt=""
             />
           ) : (
@@ -85,7 +89,7 @@ const PlayerField: FC<Player> = ({
                   key={i}
                   className={s.figure__img}
                   style={{
-                    backgroundImage: `url(${el})`,
+                    backgroundImage: `url(${process.env.PUBLIC_URL + el})`,
                   }}
                 ></div>
               ))}

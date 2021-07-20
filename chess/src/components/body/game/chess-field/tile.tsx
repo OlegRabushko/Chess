@@ -1,18 +1,18 @@
 import { FC } from "react";
 import { TileProps } from "../../../interfaces-enums";
-import s from "./chess-field.module.scss";
+import "./chess-field.scss";
 
 const Tile: FC<TileProps> = ({ number, image, position, size }) => {
   if (number % 2 === 0) {
     return (
-      <div className={s.black__field}>
+      <div className="black__field">
         {image && (
           <div
             style={{
-              backgroundImage: `url(./build/${image})`,
+              backgroundImage: `url(${process.env.PUBLIC_URL + image})`,
               width: `${size}px`,
             }}
-            className={s.figure__img}
+            className="figure__img"
           >
             {position}
           </div>
@@ -21,14 +21,14 @@ const Tile: FC<TileProps> = ({ number, image, position, size }) => {
     );
   } else {
     return (
-      <div className={s.white__field}>
+      <div className="white__field">
         {image && (
           <div
             style={{
-              backgroundImage: `url(${image})`,
+              backgroundImage: `url(${process.env.PUBLIC_URL + image})`,
               width: `${size}px`,
             }}
-            className={s.figure__img}
+            className="figure__img"
           >
             {position}
           </div>

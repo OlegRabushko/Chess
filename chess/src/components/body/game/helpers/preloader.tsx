@@ -7,6 +7,8 @@ interface PreloaderProps {
 }
 
 const Preloader: FC<PreloaderProps> = ({ waitTime }) => {
+  console.log();
+
   return (
     <>
       <div className={s.preloader__window}>
@@ -15,7 +17,7 @@ const Preloader: FC<PreloaderProps> = ({ waitTime }) => {
             <div className={s.text}>Please, expect another player...</div>
             <img
               className={s.preloader}
-              src="assets/imgs/preloader.gif"
+              src={process.env.PUBLIC_URL + "/assets/imgs/preloader.gif"}
               alt=""
             />
           </>

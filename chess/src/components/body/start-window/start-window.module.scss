@@ -1,4 +1,4 @@
-@import "../../../App.scss";
+@import "./../../../App.scss";
 
 .body__container{
   display: flex;
@@ -14,7 +14,7 @@
     margin: auto;
     width: 100px;
     height: 100px;
-    background-image: url(../../../assets/imgs/avatar.svg);
+    background-image: url(./../../../assets/imgs/avatar.svg);
     background-size: contain;
     background-color: $light-brown;
     border-radius: 50%;

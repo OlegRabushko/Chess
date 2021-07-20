@@ -9,7 +9,7 @@ const Tile: FC<TileProps> = ({ number, image, position, size }) => {
         {image && (
           <div
             style={{
-              backgroundImage: `url(${image})`,
+              backgroundImage: `url(./build/${image})`,
               width: `${size}px`,
             }}
             className={s.figure__img}

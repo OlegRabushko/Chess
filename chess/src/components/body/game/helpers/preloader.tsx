@@ -1,5 +1,5 @@
 import { FC } from "react";
-import s from "../game.module.scss";
+import s from "./../game.module.scss";
 import { Link } from "react-router-dom";
 
 interface PreloaderProps {

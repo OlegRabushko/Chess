@@ -13,13 +13,11 @@ import Preloader from "./helpers/preloader";
 import {
   setMovesOne,
   setMovesTwo,
-  setOnlinePlayers,
 } from "../../../redux/actions";
 import {
   setSocket,
   sendLoss,
   sendPlayer,
-  socket,
 } from "../../../api/webSocket";
 import { savedGame, savingGame, searchActualPlayer } from "./helpers/helper";
 

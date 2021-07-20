@@ -1,9 +1,9 @@
 import { FC, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setOnlineGame, setOnlinePlayers } from "../../../redux/actions";
-import { deletePlayer, deletePlayers, getPlayers } from "../../../api/server";
+import { deletePlayer, getPlayers } from "../../../api/server";
 import s from "./start-window.module.scss";
-import { socket } from "../../../api/webSocket";
+
 
 interface ModalProps {
   setGameType: React.Dispatch<React.SetStateAction<string>>;

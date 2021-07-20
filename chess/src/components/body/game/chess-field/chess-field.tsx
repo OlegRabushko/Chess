@@ -345,6 +345,7 @@ const ChessField: FC<ChessFieldProps> = ({
 
   return (
     <>
+      {/* <img src="" alt="" /> */}
       <div className={s.chess__container}>
         <div className={s.chess__letters}>
           {letters.map((el, i) => (

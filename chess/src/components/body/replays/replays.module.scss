@@ -1,4 +1,4 @@
-@import "../../../App.scss";
+@import "./../../../App.scss";
 
 .lobby__btn{
   @include forBtn;
@@ -61,7 +61,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-image: url('../../../assets/imgs/win-ico.svg');
+    background-image: url('./../../../assets/imgs/win-ico.svg');
     background-size: contain;
   }
 }

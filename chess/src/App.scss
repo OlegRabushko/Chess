@@ -19,28 +19,6 @@ $black: rgb(0, 0, 0);
   background-size: cover;
 }
 
-
-// @keyframes flipBoard {
-//   0%{
-//     transform: rotate(0deg) scale(1);
-//   }
-//   33%{
-//     transform: rotate(60deg) scale(0.5);
-//   }
-//   100%{
-//     transform: rotate(180deg) scale(-1);
-//   }
-// }
-
-// .flip__board{
-//   animation: flipBoard 2s linear;
-//   transform: rotate(180deg);
- 
-//   // transform: rotate(none);
-// }
-// .flip__field{
-//   transform: rotate(180deg);
-// }
 .green{
   background: green;
 }

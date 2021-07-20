@@ -8,7 +8,7 @@ import { Dispatch } from "react";
 import { MoveDeskProps } from "../redux/redux-types";
 import { getPlayers, getTurnQueue } from "./server";
 
-export const socket = new WebSocket("ws://evening-beach-47135.herokuapp.com");
+export const socket = new WebSocket("ws://localhost:3001");
 
 export const sendMessage = async (state: Piece[]) => {
   const message: SocketProps = {

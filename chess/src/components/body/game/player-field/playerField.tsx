@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux";
 import { getPlayers } from "../../../../api/server";
-import s from "../game.module.scss";
+import s from "./../game.module.scss";
 
 interface Player {
   checkWinner: boolean;

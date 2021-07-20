@@ -5,6 +5,9 @@ import {
   SET_ONLINE_PLAYERS,
   ADD_MOVE_ONE,
   ADD_MOVE_TWO,
+  PlAYER_ONE,
+  PlAYER_TWO,
+  PlAYER_ONLINE,
 } from "./actions";
 
 export type GameState = {
@@ -15,6 +18,12 @@ export type MoveDTO = {
   move: string;
   time: string;
   url: string;
+};
+
+export type PlayersState = {
+  playerOne: string;
+  playerTwo: string;
+  playerOnline: string;
 };
 
 export type Move = {
@@ -34,6 +43,10 @@ export interface OnlineGameProps {
 export interface OnlinePlayersProps {
   type: typeof SET_ONLINE_PLAYERS;
   payload: boolean;
+}
+export interface PlayersProps {
+  type: typeof PlAYER_ONE | typeof PlAYER_TWO | typeof PlAYER_ONLINE;
+  payload: string;
 }
 
 export interface MoveDeskProps {

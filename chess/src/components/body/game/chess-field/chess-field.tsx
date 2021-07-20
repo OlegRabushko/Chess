@@ -60,6 +60,7 @@ const ChessField: FC<ChessFieldProps> = ({
   const board: JSX.Element[] = [];
   const coordinate = (expression: number) => Math.floor(expression / 100);
   const onlineGame = useSelector((state: RootState) => state.game.onlineGame);
+  const getPlayersRed = useSelector((state: RootState) => state.player);
   const dispatch = useDispatch();
   const moves = useSelector((state: RootState) => state.moves);
   const allFigures = document.querySelectorAll(".figure__img");
@@ -71,13 +72,13 @@ const ChessField: FC<ChessFieldProps> = ({
   document.onmousemove = async () => {
     const queue = await getTurnQueue();
     const player = await getPlayers();
-    const playerName = localStorage.getItem("player");
-    const searchActualPlayer = !queue ? 0 : 1;
+    const playerName = getPlayersRed.playerOnline;
+    const searchActualPlayer = (await !queue) ? 0 : 1;
     let checker = (onlineGame ? !queue : !checkTurnQueue) ? "b" : "w";
     if (start) {
       allFigures.forEach((el) => {
         const elem = el as HTMLDivElement;
-        if (player[searchActualPlayer].name !== playerName && onlineGame) {
+        if (onlineGame && player[searchActualPlayer].name !== playerName) {
           elem.style.pointerEvents = "none";
         } else {
           if (

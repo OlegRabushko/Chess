@@ -10,15 +10,8 @@ import { getPlayers, updateTurnQueue } from "../../../api/server";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux";
 import Preloader from "./helpers/preloader";
-import {
-  setMovesOne,
-  setMovesTwo,
-} from "../../../redux/actions";
-import {
-  setSocket,
-  sendLoss,
-  sendPlayer,
-} from "../../../api/webSocket";
+import { setMovesOne, setMovesTwo } from "../../../redux/actions";
+import { setSocket, sendLoss, sendPlayer } from "../../../api/webSocket";
 import { savedGame, savingGame, searchActualPlayer } from "./helpers/helper";
 
 const Game: FC = () => {
@@ -39,6 +32,8 @@ const Game: FC = () => {
   const [boardActivator, setActiveForBoard] =
     useState<React.RefObject<HTMLDivElement> | null>(null);
   const onlineGame = useSelector((state: RootState) => state.game.onlineGame);
+  const getPlayersRed = useSelector((state: RootState) => state.player);
+
   const dispatch = useDispatch();
   const onlinePlayers = useSelector(
     (state: RootState) => state.game.playersReady
@@ -46,13 +41,10 @@ const Game: FC = () => {
   let waitTime = 60;
   useEffect(() => {
     setSocket(setPieces, dispatch, setTurnQueue, setLoss, refreshGame);
-    setNamePlayerOne(localStorage.getItem("player-1") as string);
-    setNamePlayerTwo(localStorage.getItem("player-2") as string);
+    setNamePlayerOne(getPlayersRed.playerOne);
+    setNamePlayerTwo(getPlayersRed.playerTwo);
     if (!onlineGame) {
-      savedGame.gamers = [
-        localStorage.getItem("player-1") as string,
-        localStorage.getItem("player-2") as string,
-      ];
+      savedGame.gamers = [getPlayersRed.playerOne, getPlayersRed.playerTwo];
     }
     const checkPlayers = setInterval(() => {
       if (onlineGame) {
@@ -79,15 +71,10 @@ const Game: FC = () => {
     }
   }, [onlinePlayers]);
 
-  window.onclick = async () => {
-    const players = await getPlayers();
-    console.log(players);
-  };
-
   useEffect(() => {
     if (onlinePlayers && onlineGame) {
       const asyncEffect = async () => {
-        setActualPlayer(await searchActualPlayer());
+        setActualPlayer(await searchActualPlayer(getPlayersRed.playerOnline));
       };
       asyncEffect();
     }

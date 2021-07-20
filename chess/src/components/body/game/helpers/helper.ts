@@ -30,10 +30,10 @@ export const gameOver = async (
   }, 1000);
 };
 
-export const searchActualPlayer = async () => {
+export const searchActualPlayer = async (playerOnline: string) => {
   const queue = await getTurnQueue();
   const player = await getPlayers();
-  const playerName = localStorage.getItem("player");
+  const playerName = playerOnline;
   const actualPlayer = !queue ? 0 : 1;
   return player[actualPlayer].name === playerName;
 };

@@ -13,7 +13,6 @@ const Replays: FC = () => {
         getSavedGameIndexedDB(setGameInfo);
         clearInterval(getInfoIndexedDb);
       }
-      console.log(gameInfo);
     }, 1000);
   }, []);
   ///////

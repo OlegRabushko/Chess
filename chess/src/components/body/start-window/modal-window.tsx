@@ -4,7 +4,6 @@ import { setOnlineGame, setOnlinePlayers } from "../../../redux/actions";
 import { deletePlayer, getPlayers } from "../../../api/server";
 import s from "./start-window.module.scss";
 
-
 interface ModalProps {
   setGameType: React.Dispatch<React.SetStateAction<string>>;
   gameType: string;
@@ -14,9 +13,6 @@ const Modal: FC<ModalProps> = ({ gameType, setGameType }) => {
   const [closeModal, setCloseModal] = useState(false);
   const dispatch = useDispatch();
 
-  window.onclick = () => {
-    console.log(gameType);
-  };
   const setGame = async () => {
     const players = await getPlayers();
     players.forEach(async (el) => {

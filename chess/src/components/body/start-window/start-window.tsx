@@ -5,6 +5,12 @@ import ChangeNameModal from "./change-name-modal";
 import Modal from "./modal-window";
 import { addPlayer, getPlayers } from "../../../api/server";
 import Player from "./player-element";
+import { useDispatch } from "react-redux";
+import {
+  setPlayerOne,
+  setPlayerOnline,
+  setPlayerTwo,
+} from "../../../redux/actions";
 
 const StartWindow: FC = () => {
   const [playerNum, setPlayer] = useState(0);
@@ -15,31 +21,22 @@ const StartWindow: FC = () => {
   const [inputOnline, setInputOnline] = useState("");
   const [gameType, setGameType] = useState("");
   const playerNameInput = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch();
 
   const setStartState = async () => {
-    localStorage.setItem(
-      "player",
-      `${inputOnline !== "" ? inputOnline : "Unknown"}`
+    dispatch(setPlayerOne(`${inputOne !== "" ? inputOne : "Player 1"}`));
+    dispatch(setPlayerTwo(`${inputTwo !== "" ? inputTwo : "Player 2"}`));
+    await dispatch(
+      setPlayerOnline(`${inputOnline !== "" ? inputOnline : "Unknown"}`)
     );
-    localStorage.setItem(
-      "player-1",
-      `${inputOne !== "" ? inputOne : "Player 1"}`
-    );
-    localStorage.setItem(
-      "player-2",
-      `${inputTwo !== "" ? inputTwo : "Player 2"}`
-    );
-    await addPlayer();
+
+    await addPlayer(inputOnline);
   };
 
   const setPlayerNameOnline = async () => {
     setInputOnline(`${playerNameInput.current?.value}`);
     playerNameInput.current!.value = "";
     setModalActiveOnline(false);
-  };
-  window.onclick = async () => {
-    const players = await getPlayers();
-    console.log(players);
   };
 
   return (

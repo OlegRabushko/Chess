@@ -1,10 +1,11 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
-import { gameReducer, moveDesksReducer } from "./reducers";
+import { gameReducer, moveDesksReducer, playersReducer } from "./reducers";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 
 const rootReducer = combineReducers({
   game: gameReducer,
+  player: playersReducer,
   moves: moveDesksReducer,
 });
 

@@ -52,9 +52,9 @@ export const updateTurnQueue = async (state: boolean) => {
   return count;
 };
 
-export const addPlayer = async () => {
+export const addPlayer = async (onlinePlayer: string) => {
   await addNewPlayer({
-    name: localStorage.getItem("player") as string,
+    name: await onlinePlayer,
     id: Date.now(),
   });
   await axios.post("http://localhost:3002/new-player");

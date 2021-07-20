@@ -21,7 +21,7 @@ const PlayerField: FC<Player> = ({
 }) => {
   const [colorOne, setColorOne] = useState("");
   const [colorTwo, setColorTwo] = useState("");
-
+  const getPlayersRed = useSelector((state: RootState) => state.player);
   const onlineGame = useSelector((state: RootState) => state.game.onlineGame);
   const moves = useSelector((state: RootState) =>
     id === 1 ? state.moves.one : state.moves.two
@@ -39,7 +39,7 @@ const PlayerField: FC<Player> = ({
           setColorTwo("white");
         }
       } else {
-        if (name === localStorage.getItem("player-1")) {
+        if (name === getPlayersRed.playerOne) {
           setColorOne("white");
           setColorTwo("black");
         } else {

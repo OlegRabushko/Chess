@@ -6,10 +6,15 @@ import {
   MovesState,
   MoveDTO,
   Move,
+  PlayersState,
+  PlayersProps,
 } from "./redux-types";
 import {
   ADD_MOVE_ONE,
   ADD_MOVE_TWO,
+  PlAYER_ONE,
+  PlAYER_ONLINE,
+  PlAYER_TWO,
   SET_GAME,
   SET_MOVES_ONE,
   SET_MOVES_TWO,
@@ -30,6 +35,28 @@ export function gameReducer(
       return { ...state, onlineGame: action.payload };
     case SET_ONLINE_PLAYERS:
       return { ...state, playersReady: action.payload };
+    default:
+      return state;
+  }
+}
+
+const playersState: PlayersState = {
+  playerOne: "",
+  playerTwo: "",
+  playerOnline: "",
+};
+
+export function playersReducer(
+  state: PlayersState = playersState,
+  action: PlayersProps
+) {
+  switch (action.type) {
+    case PlAYER_ONE:
+      return { ...state, playerOne: action.payload };
+    case PlAYER_TWO:
+      return { ...state, playerTwo: action.payload };
+    case PlAYER_ONLINE:
+      return { ...state, playerOnline: action.payload };
     default:
       return state;
   }

@@ -7,8 +7,6 @@ interface PreloaderProps {
 }
 
 const Preloader: FC<PreloaderProps> = ({ waitTime }) => {
-  console.log();
-
   return (
     <>
       <div className={s.preloader__window}>
